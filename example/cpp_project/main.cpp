@@ -10,5 +10,7 @@ int main() {
     printf("Tire material: %s\n", materials[(unsigned int)tire.material]);
     printf("Tire size: %fw, %fh\n", tire.size.width, tire.size.height);
 
+    func_with_no_return();
+
     return 0;
 }

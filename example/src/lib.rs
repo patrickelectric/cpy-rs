@@ -41,5 +41,9 @@ export_cpy!(
                 },
             }
         }
+
+        fn func_with_no_return() {
+            println!("Yep, no returns");
+        }
     }
 );
