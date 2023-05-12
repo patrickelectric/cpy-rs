@@ -7,7 +7,7 @@ use cpy_binder::export_cpy;
 
 #[rustfmt::skip]
 export_cpy!(
-    example {
+    mod example {
         enum Material {
             Plastic,
             Rubber,
