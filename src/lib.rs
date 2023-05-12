@@ -19,8 +19,8 @@ macro_rules! export_cpy {
         export_cpy!(@struct $name { $($field : $ftype,)* });
         export_cpy!(@inner $($rest)*);
     };
-    (@inner fn $name:ident() -> $ret:ty $body:block $($rest:tt)*) => {
-        export_cpy!(@fn $name() -> $ret $body);
+    (@inner fn $name:ident() $(-> $ret:ty)? $body:block $($rest:tt)*) => {
+        export_cpy!(@fn $name() $(-> $ret)? $body);
         export_cpy!(@inner $($rest)*);
     };
     (@add_classes $m:ident,) => {};
@@ -32,7 +32,7 @@ macro_rules! export_cpy {
         $m.add_class::<$name>()?;
         export_cpy!(@add_classes $m, $($rest)*);
     };
-    (@add_classes $m:ident, fn $name:ident() -> $ret:ty $body:block $($rest:tt)*) => {
+    (@add_classes $m:ident, fn $name:ident() $(-> $ret:ty)? $body:block $($rest:tt)*) => {
         $m.add_wrapped(wrap_pyfunction!($name))?;
         export_cpy!(@add_classes $m, $($rest)*);
     };
@@ -56,10 +56,10 @@ macro_rules! export_cpy {
             )*
         }
     };
-    (@fn $name:ident() -> $ret:ty $body:block) => {
+    (@fn $name:ident() $(-> $ret:ty)? $body:block) => {
         #[no_mangle]
         #[cfg_attr(feature = "python", pyfunction)]
-        pub extern "C" fn $name() -> $ret {
+        pub extern "C" fn $name() $(-> $ret)? {
             $body
         }
     };
