@@ -26,8 +26,15 @@ export_cpy!(
 
         fn create_random_tire() -> Tire {
             let mut rng = rand::thread_rng();
+
+            let random_material = if rng.gen_bool(0.5) {
+                Material::Plastic
+            } else {
+                Material::Rubber
+            };
+
             Tire {
-                material: Material::Plastic,
+                material: random_material,
                 pressure: rng.gen_range(30.0..60.0),
                 size: Size2D {
                     width: rng.gen_range(5.0..10.0),
