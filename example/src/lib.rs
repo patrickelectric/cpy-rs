@@ -5,7 +5,6 @@ use pyo3::{prelude::*, wrap_pyfunction};
 
 use cpy_binder::export_cpy;
 
-#[rustfmt::skip]
 export_cpy!(
     mod example {
         enum Material {
