@@ -1,6 +1,6 @@
 #[macro_export]
 macro_rules! export_cpy {
-    ($module_name:ident { $($item:tt)* }) => {
+    (mod $module_name:ident { $($item:tt)* }) => {
         export_cpy!(@inner $($item)*);
 
         #[cfg(feature = "python")]
