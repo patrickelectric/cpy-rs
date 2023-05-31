@@ -1,0 +1,82 @@
+name: Test all targets
+
+on: [push, pull_request]
+
+permissions:
+  contents: write
+
+jobs:
+  quick-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v3
+    - name: Rust setup
+      uses: actions-rs/toolchain@v1.0.6
+      with:
+        toolchain: nightly
+        override: true
+        components: rustfmt, clippy
+    - name: Rust | Cache
+      uses: Swatinem/rust-cache@v2
+      with:
+        prefix-key: "rust-cache"
+        shared-key: "quick-tests"
+    - name: Check Rust formatting
+      run: cargo fmt -- --check
+    - name: Check Rust code with Clippy
+      run: cargo clippy -- -Dwarnings
+    - name: Run internal tests
+      run: cargo test --verbose -- --nocapture
+    - name: Build Rust project
+      run: cargo build
+    - name: Example - Check Rust formatting
+      run: |
+        cd example
+        cargo fmt -- --check
+    - name: Example - Check Rust code with Clippy
+      run: |
+        cd example
+        cargo clippy -- -Dwarnings
+    - name: Example - Run internal tests
+      run: |
+        cd example
+        cargo test --verbose -- --nocapture
+    - name: Example - Build Rust project
+      run: |
+        cd example
+        cargo build
+    - name: Example - Build Python module
+      run: |
+        cd example
+        pip install --user maturin
+        pip install . --user
+    - name: Example - Check Python integration
+      run: |
+        cd example
+        python py_project/main.py
+    - name: Example - Check C++ integration
+      run: |
+        cd example/cpp_project
+        cmake -B build -DCMAKE_BUILD_TYPE=Debug
+        cmake --build build --config Debug --parallel
+        ./build/example
+
+  deploy-doc:
+    needs: quick-tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions-rs/toolchain@v1.0.6
+      with:
+        toolchain: nightly
+        override: true
+        components: rust-docs
+    - name: Build docs
+      run: cargo doc
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      if: ${{ github.ref == 'refs/heads/master' }}
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./target/doc
