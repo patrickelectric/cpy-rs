@@ -45,5 +45,9 @@ export_cpy!(
         fn func_with_no_return() {
             println!("Yep, no returns");
         }
+
+        fn wheel_size_aspect(height: f32, width: f32) -> f32 {
+            (height / width) * 100.0
+        }
     }
 );
