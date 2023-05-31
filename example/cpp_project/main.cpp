@@ -9,6 +9,7 @@ int main() {
     printf("Tire pressure: %f\n", tire.pressure);
     printf("Tire material: %s\n", materials[(unsigned int)tire.material]);
     printf("Tire size: %fw, %fh\n", tire.size.width, tire.size.height);
+    printf("The tire have an aspect ratio of %.2f\n",wheel_size_aspect(tire.size.width, tire.size.height));
 
     func_with_no_return();
 
