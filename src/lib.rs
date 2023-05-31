@@ -6,7 +6,7 @@ macro_rules! export_cpy {
         #[cfg(feature = "python")]
         #[pymodule]
         fn $module_name(_py: Python, m: &PyModule) -> PyResult<()> {
-            export_cpy!(@add_classes m, $($item)*);
+            export_cpy!(@add_py_binding m, $($item)*);
             Ok(())
         }
     };
@@ -62,5 +62,18 @@ macro_rules! export_cpy {
         pub extern "C" fn $name() $(-> $ret)? {
             $body
         }
+    };
+    (@add_py_binding $m:ident,) => {};
+    (@add_py_binding $m:ident, enum $name:ident { $($variant:ident,)* } $($rest:tt)*) => {
+        $m.add_class::<$name>()?;
+        export_cpy!(@add_py_binding $m, $($rest)*);
+    };
+    (@add_py_binding $m:ident, struct $name:ident { $($field:ident : $ftype:ty,)* } $($rest:tt)*) => {
+        $m.add_class::<$name>()?;
+        export_cpy!(@add_py_binding $m, $($rest)*);
+    };
+    (@add_py_binding $m:ident, fn $name:ident() $(-> $ret:ty)? $body:block $($rest:tt)*) => {
+        $m.add_wrapped(wrap_pyfunction!($name))?;
+        export_cpy!(@add_py_binding $m, $($rest)*);
     };
 }
