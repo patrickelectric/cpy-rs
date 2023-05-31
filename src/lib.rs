@@ -1,5 +1,13 @@
 #[macro_export]
 macro_rules! export_cpy {
+    //(0) - Entry point of the macro.
+    //      Matches the module name and block of items.
+    //      It exports Python related modules only if required,
+    //      see the examples.
+    //      Each type have a well defined scope, in sections:
+    //      (1) - Processing
+    //      (2) - Structure
+    //      (3) - Python Module Binding
     (mod $module_name:ident { $($item:tt)* }) => {
         export_cpy!(@process_item $($item)*);
 
@@ -10,6 +18,8 @@ macro_rules! export_cpy {
             Ok(())
         }
     };
+
+    //(1) - This section defines the processing items patterns
     (@process_item) => {};
     (@process_item enum $name:ident { $($variant:ident,)* } $($rest:tt)*) => {
         export_cpy!(@generate_enum $name { $($variant,)* });
@@ -24,6 +34,7 @@ macro_rules! export_cpy {
         export_cpy!(@process_item $($rest)*);
     };
 
+    //(1) - This section defines the structure of the itens
     (@generate_enum $name:ident { $($variant:ident,)* }) => {
         #[derive(Clone, Debug)]
         #[repr(C)]
@@ -51,6 +62,8 @@ macro_rules! export_cpy {
             $body
         }
     };
+
+    //(3) - This section defines the bindings to be exported to Python module
     (@add_py_binding $m:ident,) => {};
     (@add_py_binding $m:ident, enum $name:ident { $($variant:ident,)* } $($rest:tt)*) => {
         $m.add_class::<$name>()?;
