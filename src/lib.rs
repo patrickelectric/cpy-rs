@@ -29,12 +29,12 @@ macro_rules! export_cpy {
         export_cpy!(@generate_struct $name { $($field : $ftype,)* });
         export_cpy!(@process_item $($rest)*);
     };
-    (@process_item fn $name:ident() $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        export_cpy!(@generate_function $name() $(-> $ret)? $body);
+    (@process_item fn $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
+        export_cpy!(@generate_function $name($($param : $ptype),*) $(-> $ret)? $body);
         export_cpy!(@process_item $($rest)*);
     };
 
-    //(1) - This section defines the structure of the itens
+    //(2) - This section defines the structure of the itens
     (@generate_enum $name:ident { $($variant:ident,)* }) => {
         #[derive(Clone, Debug)]
         #[repr(C)]
@@ -55,10 +55,10 @@ macro_rules! export_cpy {
             )*
         }
     };
-    (@generate_function $name:ident() $(-> $ret:ty)? $body:block) => {
+    (@generate_function $name:ident($($arg:ident: $arg_type:ty),*) $(-> $ret:ty)? $body:block) => {
         #[no_mangle]
         #[cfg_attr(feature = "python", pyfunction)]
-        pub extern "C" fn $name() $(-> $ret)? {
+        pub extern "C" fn $name($($arg: $arg_type),*) $(-> $ret)? {
             $body
         }
     };
@@ -73,7 +73,7 @@ macro_rules! export_cpy {
         $m.add_class::<$name>()?;
         export_cpy!(@add_py_binding $m, $($rest)*);
     };
-    (@add_py_binding $m:ident, fn $name:ident() $(-> $ret:ty)? $body:block $($rest:tt)*) => {
+    (@add_py_binding $m:ident, fn $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
         $m.add_wrapped(wrap_pyfunction!($name))?;
         export_cpy!(@add_py_binding $m, $($rest)*);
     };
