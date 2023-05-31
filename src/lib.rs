@@ -1,7 +1,7 @@
 #[macro_export]
 macro_rules! export_cpy {
     (mod $module_name:ident { $($item:tt)* }) => {
-        export_cpy!(@inner $($item)*);
+        export_cpy!(@process_item $($item)*);
 
         #[cfg(feature = "python")]
         #[pymodule]
@@ -10,33 +10,19 @@ macro_rules! export_cpy {
             Ok(())
         }
     };
-    (@inner) => {};
-    (@inner enum $name:ident { $($variant:ident,)* } $($rest:tt)*) => {
-        export_cpy!(@enum $name { $($variant,)* });
-        export_cpy!(@inner $($rest)*);
+    (@process_item) => {};
+    (@process_item enum $name:ident { $($variant:ident,)* } $($rest:tt)*) => {
+        export_cpy!(@process_item $($rest)*);
     };
-    (@inner struct $name:ident { $($field:ident : $ftype:ty,)* } $($rest:tt)*) => {
+    (@process_item struct $name:ident { $($field:ident : $ftype:ty,)* } $($rest:tt)*) => {
         export_cpy!(@struct $name { $($field : $ftype,)* });
-        export_cpy!(@inner $($rest)*);
+        export_cpy!(@process_item $($rest)*);
     };
-    (@inner fn $name:ident() $(-> $ret:ty)? $body:block $($rest:tt)*) => {
+    (@process_item fn $name:ident() $(-> $ret:ty)? $body:block $($rest:tt)*) => {
         export_cpy!(@fn $name() $(-> $ret)? $body);
-        export_cpy!(@inner $($rest)*);
+        export_cpy!(@process_item $($rest)*);
     };
-    (@add_classes $m:ident,) => {};
-    (@add_classes $m:ident, enum $name:ident { $($variant:ident,)* } $($rest:tt)*) => {
-        $m.add_class::<$name>()?;
-        export_cpy!(@add_classes $m, $($rest)*);
-    };
-    (@add_classes $m:ident, struct $name:ident { $($field:ident : $ftype:ty,)* } $($rest:tt)*) => {
-        $m.add_class::<$name>()?;
-        export_cpy!(@add_classes $m, $($rest)*);
-    };
-    (@add_classes $m:ident, fn $name:ident() $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        $m.add_wrapped(wrap_pyfunction!($name))?;
-        export_cpy!(@add_classes $m, $($rest)*);
-    };
-    (@enum $name:ident { $($variant:ident,)* }) => {
+
         #[derive(Clone, Debug)]
         #[repr(C)]
         #[cfg_attr(feature = "python", pyo3::prelude::pyclass)]
