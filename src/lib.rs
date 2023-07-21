@@ -113,7 +113,15 @@ macro_rules! export_cpy {
         $m.add_class::<$name>()?;
         export_cpy!(@add_py_binding $m, $($rest)*);
     };
+    (@add_py_binding $m:ident, enum $comment:literal $name:ident { $($variant:ident,)* } $($rest:tt)*) => {
+        $m.add_class::<$name>()?;
+        export_cpy!(@add_py_binding $m, $($rest)*);
+    };
     (@add_py_binding $m:ident, struct $name:ident { $($field:ident : $ftype:ty,)* } $($rest:tt)*) => {
+        $m.add_class::<$name>()?;
+        export_cpy!(@add_py_binding $m, $($rest)*);
+    };
+    (@add_py_binding $m:ident, struct $comment:literal $name:ident { $($field:ident : $ftype:ty,)* } $($rest:tt)*) => {
         $m.add_class::<$name>()?;
         export_cpy!(@add_py_binding $m, $($rest)*);
     };
@@ -121,10 +129,21 @@ macro_rules! export_cpy {
         $m.add_wrapped(wrap_pyfunction!($name))?;
         export_cpy!(@add_py_binding $m, $($rest)*);
     };
+    (@add_py_binding $m:ident, fn $comment:literal $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
+        $m.add_wrapped(wrap_pyfunction!($name))?;
+        export_cpy!(@add_py_binding $m, $($rest)*);
+    };
     (@add_py_binding $m:ident, fn_c $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
         export_cpy!(@add_py_binding $m, $($rest)*);
     };
+    (@add_py_binding $m:ident, fn_c $comment:literal $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
+        export_cpy!(@add_py_binding $m, $($rest)*);
+    };
     (@add_py_binding $m:ident, fn_py $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
+        $m.add_wrapped(wrap_pyfunction!($name))?;
+        export_cpy!(@add_py_binding $m, $($rest)*);
+    };
+    (@add_py_binding $m:ident, fn_py $comment:literal $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
         $m.add_wrapped(wrap_pyfunction!($name))?;
         export_cpy!(@add_py_binding $m, $($rest)*);
     };
