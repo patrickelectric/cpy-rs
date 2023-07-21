@@ -46,7 +46,7 @@ export_cpy!(
             println!("Wheel identifier: {dimensions:?}");
         }
 
-        fn_py format_wheel_identifier(dimensions: Vec<u8>) {
+        fn_py format_wheel_identifier(dimensions: [u8; 3]) {
             println!("Wheel identifier: {dimensions:?}");
         }
 
