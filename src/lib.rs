@@ -33,6 +33,14 @@ macro_rules! export_cpy {
         export_cpy!(@generate_function $name($($param : $ptype),*) $(-> $ret)? $body);
         export_cpy!(@process_item $($rest)*);
     };
+    (@process_item fn_c $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
+        export_cpy!(@generate_c_function $name($($param : $ptype),*) $(-> $ret)? $body);
+        export_cpy!(@process_item $($rest)*);
+    };
+    (@process_item fn_py $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
+        export_cpy!(@generate_py_function $name($($param : $ptype),*) $(-> $ret)? $body);
+        export_cpy!(@process_item $($rest)*);
+    };
 
     //(2) - This section defines the structure of the itens
     (@generate_enum $name:ident { $($variant:ident,)* }) => {
@@ -61,6 +69,18 @@ macro_rules! export_cpy {
         pub extern "C" fn $name($($arg: $arg_type),*) $(-> $ret)?
             $body
     };
+    (@generate_c_function $name:ident($($arg:ident: $arg_type:ty),*) $(-> $ret:ty)? $body:block) => {
+        #[no_mangle]
+        #[cfg(not(feature = "python"))]
+        pub extern "C" fn $name($($arg: $arg_type),*) $(-> $ret)?
+            $body
+    };
+    (@generate_py_function $name:ident($($arg:ident: $arg_type:ty),*) $(-> $ret:ty)? $body:block) => {
+        #[cfg(feature = "python")]
+        #[pyfunction]
+        pub fn $name($($arg: $arg_type),*) $(-> $ret)?
+            $body
+    };
 
     //(3) - This section defines the bindings to be exported to Python module
     (@add_py_binding $m:ident,) => {};
@@ -73,6 +93,13 @@ macro_rules! export_cpy {
         export_cpy!(@add_py_binding $m, $($rest)*);
     };
     (@add_py_binding $m:ident, fn $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
+        $m.add_wrapped(wrap_pyfunction!($name))?;
+        export_cpy!(@add_py_binding $m, $($rest)*);
+    };
+    (@add_py_binding $m:ident, fn_c $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
+        export_cpy!(@add_py_binding $m, $($rest)*);
+    };
+    (@add_py_binding $m:ident, fn_py $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
         $m.add_wrapped(wrap_pyfunction!($name))?;
         export_cpy!(@add_py_binding $m, $($rest)*);
     };
