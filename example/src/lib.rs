@@ -42,7 +42,12 @@ export_cpy!(
             }
         }
 
-        fn_c format_wheel_identifier(dimensions: &[u8; 3]) {
+        fn_c "
+            This function prints in a friendly way
+            the identification of the wheel based on
+            the our standard.
+        "
+        format_wheel_identifier(dimensions: &[u8; 3]) {
             println!("Wheel identifier: {dimensions:?}");
         }
 
