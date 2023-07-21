@@ -21,29 +21,50 @@ macro_rules! export_cpy {
 
     //(1) - This section defines the processing items patterns
     (@process_item) => {};
+    (@process_item enum $comment:literal $name:ident { $($variant:ident,)* } $($rest:tt)*) => {
+        export_cpy!(@generate_enum $comment $name { $($variant,)* });
+        export_cpy!(@process_item $($rest)*);
+    };
     (@process_item enum $name:ident { $($variant:ident,)* } $($rest:tt)*) => {
-        export_cpy!(@generate_enum $name { $($variant,)* });
+        export_cpy!(@generate_enum "No documentation" $name { $($variant,)* });
+        export_cpy!(@process_item $($rest)*);
+    };
+    (@process_item struct $comment:literal $name:ident { $($field:ident : $ftype:ty,)* } $($rest:tt)*) => {
+        export_cpy!(@generate_struct $comment $name { $($field : $ftype,)* });
         export_cpy!(@process_item $($rest)*);
     };
     (@process_item struct $name:ident { $($field:ident : $ftype:ty,)* } $($rest:tt)*) => {
-        export_cpy!(@generate_struct $name { $($field : $ftype,)* });
+        export_cpy!(@generate_struct "No documentation" $name { $($field : $ftype,)* });
+        export_cpy!(@process_item $($rest)*);
+    };
+    (@process_item fn $comment:literal $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
+        export_cpy!(@generate_function $comment $name($($param : $ptype),*) $(-> $ret)? $body);
         export_cpy!(@process_item $($rest)*);
     };
     (@process_item fn $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        export_cpy!(@generate_function $name($($param : $ptype),*) $(-> $ret)? $body);
+        export_cpy!(@generate_function "No documentation" $name($($param : $ptype),*) $(-> $ret)? $body);
+        export_cpy!(@process_item $($rest)*);
+    };
+    (@process_item fn_c $comment:literal $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
+        export_cpy!(@generate_c_function $comment $name($($param : $ptype),*) $(-> $ret)? $body);
         export_cpy!(@process_item $($rest)*);
     };
     (@process_item fn_c $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        export_cpy!(@generate_c_function $name($($param : $ptype),*) $(-> $ret)? $body);
+        export_cpy!(@generate_c_function "No documentation" $name($($param : $ptype),*) $(-> $ret)? $body);
+        export_cpy!(@process_item $($rest)*);
+    };
+    (@process_item fn_py $comment:literal $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
+        export_cpy!(@generate_py_function $comment $name($($param : $ptype),*) $(-> $ret)? $body);
         export_cpy!(@process_item $($rest)*);
     };
     (@process_item fn_py $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        export_cpy!(@generate_py_function $name($($param : $ptype),*) $(-> $ret)? $body);
+        export_cpy!(@generate_py_function "No documentation" $name($($param : $ptype),*) $(-> $ret)? $body);
         export_cpy!(@process_item $($rest)*);
     };
 
     //(2) - This section defines the structure of the itens
-    (@generate_enum $name:ident { $($variant:ident,)* }) => {
+    (@generate_enum $comment:literal $name:ident { $($variant:ident,)* }) => {
+        #[doc = $comment]
         #[derive(Clone, Debug)]
         #[repr(C)]
         #[cfg_attr(feature = "python", pyo3::prelude::pyclass)]
@@ -53,7 +74,8 @@ macro_rules! export_cpy {
             )*
         }
     };
-    (@generate_struct $name:ident { $($field:ident : $ftype:ty,)* }) => {
+    (@generate_struct $comment:literal $name:ident { $($field:ident : $ftype:ty,)* }) => {
+        #[doc = $comment]
         #[derive(Clone, Debug)]
         #[repr(C)]
         #[cfg_attr(feature = "python", pyo3::prelude::pyclass(get_all, set_all))]
@@ -63,19 +85,22 @@ macro_rules! export_cpy {
             )*
         }
     };
-    (@generate_function $name:ident($($arg:ident: $arg_type:ty),*) $(-> $ret:ty)? $body:block) => {
+    (@generate_function $comment:literal $name:ident($($arg:ident: $arg_type:ty),*) $(-> $ret:ty)? $body:block) => {
+        #[doc = $comment]
         #[no_mangle]
         #[cfg_attr(feature = "python", pyfunction)]
         pub extern "C" fn $name($($arg: $arg_type),*) $(-> $ret)?
             $body
     };
-    (@generate_c_function $name:ident($($arg:ident: $arg_type:ty),*) $(-> $ret:ty)? $body:block) => {
+    (@generate_c_function $comment:literal $name:ident($($arg:ident: $arg_type:ty),*) $(-> $ret:ty)? $body:block) => {
+        #[doc = $comment]
         #[no_mangle]
         #[cfg(not(feature = "python"))]
         pub extern "C" fn $name($($arg: $arg_type),*) $(-> $ret)?
             $body
     };
-    (@generate_py_function $name:ident($($arg:ident: $arg_type:ty),*) $(-> $ret:ty)? $body:block) => {
+    (@generate_py_function $comment:literal $name:ident($($arg:ident: $arg_type:ty),*) $(-> $ret:ty)? $body:block) => {
+        #[doc = $comment]
         #[cfg(feature = "python")]
         #[pyfunction]
         pub fn $name($($arg: $arg_type),*) $(-> $ret)?
