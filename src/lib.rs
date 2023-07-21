@@ -21,6 +21,10 @@ macro_rules! export_cpy {
 
     //(1) - This section defines the processing items patterns
     (@process_item) => {};
+    (@process_item skip { $($content:tt)* } $($rest:tt)*) => {
+        export_cpy!(@expand_content $($content)*);
+        export_cpy!(@process_item $($rest)*);
+    };
     (@process_item enum $name:ident { $($variant:ident,)* } $($rest:tt)*) => {
         export_cpy!(@generate_enum $name { $($variant,)* });
         export_cpy!(@process_item $($rest)*);
@@ -61,6 +65,9 @@ macro_rules! export_cpy {
         pub extern "C" fn $name($($arg: $arg_type),*) $(-> $ret)? {
             $body
         }
+    };
+    (@expand_content $($content:tt)*) => {
+        $($content)*
     };
 
     //(3) - This section defines the bindings to be exported to Python module
