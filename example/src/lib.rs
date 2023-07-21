@@ -42,6 +42,14 @@ export_cpy!(
             }
         }
 
+        fn_c format_wheel_identifier(dimensions: &[u8; 3]) {
+            println!("Wheel identifier: {dimensions:?}");
+        }
+
+        fn_py format_wheel_identifier(dimensions: Vec<u8>) {
+            println!("Wheel identifier: {dimensions:?}");
+        }
+
         fn func_with_no_return() {
             println!("Yep, no returns");
         }
