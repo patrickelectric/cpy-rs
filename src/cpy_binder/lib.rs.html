@@ -104,6 +104,50 @@
 <a href="#104" id="104">104</a>
 <a href="#105" id="105">105</a>
 <a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
+<a href="#120" id="120">120</a>
+<a href="#121" id="121">121</a>
+<a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
 </pre></div><pre class="rust"><code><span class="attr">#[macro_export]
 </span><span class="macro">macro_rules! </span>export_cpy {
     <span class="comment">//(0) - Entry point of the macro.
@@ -127,30 +171,51 @@
 
     <span class="comment">//(1) - This section defines the processing items patterns
     </span>(@process_item) =&gt; {};
+    (@process_item <span class="kw">enum </span><span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$variant</span>:ident,)* } $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
+        <span class="macro">export_cpy!</span>(@generate_enum <span class="macro-nonterminal">$comment $name </span>{ $(<span class="macro-nonterminal">$variant</span>,)* });
+        <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
+    };
     (@process_item <span class="kw">enum </span><span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$variant</span>:ident,)* } $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@generate_enum <span class="macro-nonterminal">$name </span>{ $(<span class="macro-nonterminal">$variant</span>,)* });
+        <span class="macro">export_cpy!</span>(@generate_enum <span class="string">&quot;No documentation&quot; </span><span class="macro-nonterminal">$name </span>{ $(<span class="macro-nonterminal">$variant</span>,)* });
+        <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
+    };
+    (@process_item <span class="kw">struct </span><span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$field</span>:ident : <span class="macro-nonterminal">$ftype</span>:ty,)* } $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
+        <span class="macro">export_cpy!</span>(@generate_struct <span class="macro-nonterminal">$comment $name </span>{ $(<span class="macro-nonterminal">$field </span>: <span class="macro-nonterminal">$ftype</span>,)* });
         <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
     };
     (@process_item <span class="kw">struct </span><span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$field</span>:ident : <span class="macro-nonterminal">$ftype</span>:ty,)* } $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@generate_struct <span class="macro-nonterminal">$name </span>{ $(<span class="macro-nonterminal">$field </span>: <span class="macro-nonterminal">$ftype</span>,)* });
+        <span class="macro">export_cpy!</span>(@generate_struct <span class="string">&quot;No documentation&quot; </span><span class="macro-nonterminal">$name </span>{ $(<span class="macro-nonterminal">$field </span>: <span class="macro-nonterminal">$ftype</span>,)* });
+        <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
+    };
+    (@process_item <span class="kw">fn </span><span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
+        <span class="macro">export_cpy!</span>(@generate_function <span class="macro-nonterminal">$comment $name</span>($(<span class="macro-nonterminal">$param </span>: <span class="macro-nonterminal">$ptype</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>);
         <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
     };
     (@process_item <span class="kw">fn </span><span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@generate_function <span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$param </span>: <span class="macro-nonterminal">$ptype</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>);
+        <span class="macro">export_cpy!</span>(@generate_function <span class="string">&quot;No documentation&quot; </span><span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$param </span>: <span class="macro-nonterminal">$ptype</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>);
+        <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
+    };
+    (@process_item fn_c <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
+        <span class="macro">export_cpy!</span>(@generate_c_function <span class="macro-nonterminal">$comment $name</span>($(<span class="macro-nonterminal">$param </span>: <span class="macro-nonterminal">$ptype</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>);
         <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
     };
     (@process_item fn_c <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@generate_c_function <span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$param </span>: <span class="macro-nonterminal">$ptype</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>);
+        <span class="macro">export_cpy!</span>(@generate_c_function <span class="string">&quot;No documentation&quot; </span><span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$param </span>: <span class="macro-nonterminal">$ptype</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>);
+        <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
+    };
+    (@process_item fn_py <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
+        <span class="macro">export_cpy!</span>(@generate_py_function <span class="macro-nonterminal">$comment $name</span>($(<span class="macro-nonterminal">$param </span>: <span class="macro-nonterminal">$ptype</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>);
         <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
     };
     (@process_item fn_py <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@generate_py_function <span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$param </span>: <span class="macro-nonterminal">$ptype</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>);
+        <span class="macro">export_cpy!</span>(@generate_py_function <span class="string">&quot;No documentation&quot; </span><span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$param </span>: <span class="macro-nonterminal">$ptype</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>);
         <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
     };
 
     <span class="comment">//(2) - This section defines the structure of the itens
-    </span>(@generate_enum <span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$variant</span>:ident,)* }) =&gt; {
-        <span class="attr">#[derive(Clone, Debug)]
+    </span>(@generate_enum <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$variant</span>:ident,)* }) =&gt; {
+        <span class="attr">#[doc = <span class="macro-nonterminal">$comment</span>]
+        #[derive(Clone, Debug)]
         #[repr(C)]
         #[cfg_attr(feature = <span class="string">&quot;python&quot;</span>, pyo3::prelude::pyclass)]
         </span><span class="kw">pub enum </span><span class="macro-nonterminal">$name </span>{
@@ -159,8 +224,9 @@
             )*
         }
     };
-    (@generate_struct <span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$field</span>:ident : <span class="macro-nonterminal">$ftype</span>:ty,)* }) =&gt; {
-        <span class="attr">#[derive(Clone, Debug)]
+    (@generate_struct <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$field</span>:ident : <span class="macro-nonterminal">$ftype</span>:ty,)* }) =&gt; {
+        <span class="attr">#[doc = <span class="macro-nonterminal">$comment</span>]
+        #[derive(Clone, Debug)]
         #[repr(C)]
         #[cfg_attr(feature = <span class="string">&quot;python&quot;</span>, pyo3::prelude::pyclass(get_all, set_all))]
         </span><span class="kw">pub struct </span><span class="macro-nonterminal">$name </span>{
@@ -169,20 +235,23 @@
             )*
         }
     };
-    (@generate_function <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$arg</span>:ident: <span class="macro-nonterminal">$arg_type</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block) =&gt; {
-        <span class="attr">#[no_mangle]
+    (@generate_function <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$arg</span>:ident: <span class="macro-nonterminal">$arg_type</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block) =&gt; {
+        <span class="attr">#[doc = <span class="macro-nonterminal">$comment</span>]
+        #[no_mangle]
         #[cfg_attr(feature = <span class="string">&quot;python&quot;</span>, pyfunction)]
         </span><span class="kw">pub extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span><span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$arg</span>: <span class="macro-nonterminal">$arg_type</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">?
             </span><span class="macro-nonterminal">$body
     </span>};
-    (@generate_c_function <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$arg</span>:ident: <span class="macro-nonterminal">$arg_type</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block) =&gt; {
-        <span class="attr">#[no_mangle]
+    (@generate_c_function <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$arg</span>:ident: <span class="macro-nonterminal">$arg_type</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block) =&gt; {
+        <span class="attr">#[doc = <span class="macro-nonterminal">$comment</span>]
+        #[no_mangle]
         #[cfg(not(feature = <span class="string">&quot;python&quot;</span>))]
         </span><span class="kw">pub extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span><span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$arg</span>: <span class="macro-nonterminal">$arg_type</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">?
             </span><span class="macro-nonterminal">$body
     </span>};
-    (@generate_py_function <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$arg</span>:ident: <span class="macro-nonterminal">$arg_type</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block) =&gt; {
-        <span class="attr">#[cfg(feature = <span class="string">&quot;python&quot;</span>)]
+    (@generate_py_function <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$arg</span>:ident: <span class="macro-nonterminal">$arg_type</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block) =&gt; {
+        <span class="attr">#[doc = <span class="macro-nonterminal">$comment</span>]
+        #[cfg(feature = <span class="string">&quot;python&quot;</span>)]
         #[pyfunction]
         </span><span class="kw">pub fn </span><span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$arg</span>: <span class="macro-nonterminal">$arg_type</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">?
             </span><span class="macro-nonterminal">$body
@@ -194,7 +263,15 @@
         <span class="macro-nonterminal">$m</span>.add_class::&lt;<span class="macro-nonterminal">$name</span>&gt;()<span class="question-mark">?</span>;
         <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
     };
+    (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, <span class="kw">enum </span><span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$variant</span>:ident,)* } $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
+        <span class="macro-nonterminal">$m</span>.add_class::&lt;<span class="macro-nonterminal">$name</span>&gt;()<span class="question-mark">?</span>;
+        <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
+    };
     (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, <span class="kw">struct </span><span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$field</span>:ident : <span class="macro-nonterminal">$ftype</span>:ty,)* } $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
+        <span class="macro-nonterminal">$m</span>.add_class::&lt;<span class="macro-nonterminal">$name</span>&gt;()<span class="question-mark">?</span>;
+        <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
+    };
+    (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, <span class="kw">struct </span><span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$field</span>:ident : <span class="macro-nonterminal">$ftype</span>:ty,)* } $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
         <span class="macro-nonterminal">$m</span>.add_class::&lt;<span class="macro-nonterminal">$name</span>&gt;()<span class="question-mark">?</span>;
         <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
     };
@@ -202,10 +279,21 @@
         <span class="macro-nonterminal">$m</span>.add_wrapped(<span class="macro">wrap_pyfunction!</span>(<span class="macro-nonterminal">$name</span>))<span class="question-mark">?</span>;
         <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
     };
+    (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, <span class="kw">fn </span><span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
+        <span class="macro-nonterminal">$m</span>.add_wrapped(<span class="macro">wrap_pyfunction!</span>(<span class="macro-nonterminal">$name</span>))<span class="question-mark">?</span>;
+        <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
+    };
     (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, fn_c <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
         <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
     };
+    (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, fn_c <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
+        <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
+    };
     (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, fn_py <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
+        <span class="macro-nonterminal">$m</span>.add_wrapped(<span class="macro">wrap_pyfunction!</span>(<span class="macro-nonterminal">$name</span>))<span class="question-mark">?</span>;
+        <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
+    };
+    (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, fn_py <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
         <span class="macro-nonterminal">$m</span>.add_wrapped(<span class="macro">wrap_pyfunction!</span>(<span class="macro-nonterminal">$name</span>))<span class="question-mark">?</span>;
         <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
     };
