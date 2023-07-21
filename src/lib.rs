@@ -58,9 +58,8 @@ macro_rules! export_cpy {
     (@generate_function $name:ident($($arg:ident: $arg_type:ty),*) $(-> $ret:ty)? $body:block) => {
         #[no_mangle]
         #[cfg_attr(feature = "python", pyfunction)]
-        pub extern "C" fn $name($($arg: $arg_type),*) $(-> $ret)? {
+        pub extern "C" fn $name($($arg: $arg_type),*) $(-> $ret)?
             $body
-        }
     };
 
     //(3) - This section defines the bindings to be exported to Python module
