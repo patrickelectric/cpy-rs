@@ -55,6 +55,18 @@ export_cpy!(
             println!("Wheel identifier: {dimensions:?}");
         }
 
+        fn_c format_size_of_wheels(sizes: *const u8, length: usize) {
+            let values = unsafe {
+                assert!(!sizes.is_null());
+                std::slice::from_raw_parts(sizes, length)
+            };
+            println!("Wheel sizes: {values:?}");
+        }
+
+        fn_py format_size_of_wheels(sizes: Vec<u8>) {
+            println!("Wheel sizes: {sizes:?}");
+        }
+
         fn func_with_no_return() {
             println!("Yep, no returns");
         }
