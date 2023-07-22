@@ -5,6 +5,7 @@ edition = "2021"
 description = "Helps when creating binds from Rust to C++ and Python"
 repository = "https://github.com/patrickelectric/cpy-rs"
 license = "MIT"
+readme = "README.md"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
