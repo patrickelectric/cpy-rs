@@ -9,6 +9,9 @@ macro_rules! export_cpy {
     //      (2) - Structure
     //      (3) - Python Module Binding
     (mod $module_name:ident { $($item:tt)* }) => {
+        #[cfg(feature = "python")]
+        use pyo3::{prelude::*, wrap_pyfunction};
+
         export_cpy!(@process_item $($item)*);
 
         #[cfg(feature = "python")]
