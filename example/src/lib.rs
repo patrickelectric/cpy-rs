@@ -1,8 +1,5 @@
 use rand::Rng;
 
-#[cfg(feature = "python")]
-use pyo3::{prelude::*, wrap_pyfunction};
-
 use cpy_binder::export_cpy;
 
 export_cpy!(
