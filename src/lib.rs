@@ -1,153 +1,222 @@
-#[macro_export]
-macro_rules! export_cpy {
-    //(0) - Entry point of the macro.
-    //      Matches the module name and block of items.
-    //      It exports Python related modules only if required,
-    //      see the examples.
-    //      Each type have a well defined scope, in sections:
-    //      (1) - Processing
-    //      (2) - Structure
-    //      (3) - Python Module Binding
-    (mod $module_name:ident { $($item:tt)* }) => {
-        #[cfg(feature = "python")]
-        use pyo3::{prelude::*, wrap_pyfunction};
+extern crate proc_macro;
 
-        export_cpy!(@process_item $($item)*);
+use proc_macro::TokenStream;
+use quote::{format_ident, quote};
+use syn::{
+    bracketed, parse::Parse, parse::ParseStream, parse_macro_input, punctuated::Punctuated,
+    Attribute, Ident, ItemFn, Lit, Meta, Result, Token,
+};
 
+#[proc_macro_attribute]
+pub fn cpy_enum(_attributes: TokenStream, item: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(item as syn::ItemEnum);
+    let name = &input.ident;
+
+    let comment = get_comment(&input.attrs);
+
+    let variants: Vec<_> = input.variants.iter().map(|v| &v.ident).collect();
+    let expanded = quote! {
+        #[doc = #comment]
+        #[derive(Clone, Debug)]
+        #[repr(C)]
+        #[cfg_attr(feature = "python", pyo3::prelude::pyclass)]
+        pub enum #name {
+            #(#variants),*
+        }
+    };
+
+    expanded.into()
+}
+
+#[proc_macro_attribute]
+pub fn cpy_struct(_attributes: TokenStream, item: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(item as syn::ItemStruct);
+    let name = &input.ident;
+
+    let comment = get_comment(&input.attrs);
+
+    let fields: Vec<_> = input
+        .fields
+        .iter()
+        .map(|f| {
+            let fname = &f.ident;
+            let ftype = &f.ty;
+            quote! { #fname: #ftype }
+        })
+        .collect();
+
+    let expanded = quote! {
+        #[doc = #comment]
+        #[derive(Clone, Debug)]
+        #[repr(C)]
+        #[cfg_attr(feature = "python", pyo3::prelude::pyclass(get_all, set_all))]
+        pub struct #name {
+            #(#fields),*
+        }
+    };
+
+    expanded.into()
+}
+
+#[proc_macro_attribute]
+pub fn cpy_fn(_attributes: TokenStream, item: TokenStream) -> TokenStream {
+    let mut input = parse_macro_input!(item as ItemFn);
+
+    let comment = get_comment(&input.attrs);
+    input.attrs.retain(|attr| !attr.path.is_ident("comment"));
+
+    let fn_name = &input.sig.ident;
+    let inputs = &input.sig.inputs;
+    let output = &input.sig.output;
+    let block = &input.block;
+
+    let expanded = quote! {
+        #[doc = #comment]
+        #[no_mangle]
+        #[cfg_attr(feature = "python", pyo3::prelude::pyfunction)]
+        pub extern "C" fn #fn_name(#inputs) #output #block
+    };
+
+    expanded.into()
+}
+
+#[proc_macro_attribute]
+pub fn cpy_fn_c(_attributes: TokenStream, item: TokenStream) -> TokenStream {
+    let mut input = parse_macro_input!(item as ItemFn);
+
+    let comment = get_comment(&input.attrs);
+    input.attrs.retain(|attr| !attr.path.is_ident("comment"));
+
+    let mut fn_name = input.sig.ident;
+    if fn_name.to_string().ends_with("_c") {
+        fn_name = format_ident!("{}", &fn_name.to_string().trim_end_matches("_c"));
+    }
+
+    let inputs = &input.sig.inputs;
+    let output = &input.sig.output;
+    let block = &input.block;
+
+    let expanded = quote! {
+        #[doc = #comment]
+        #[no_mangle]
+        #[cfg(not(feature = "python"))]
+        pub extern "C" fn #fn_name(#inputs) #output #block
+    };
+
+    expanded.into()
+}
+
+#[proc_macro_attribute]
+pub fn cpy_fn_py(_attributes: TokenStream, item: TokenStream) -> TokenStream {
+    let mut input = parse_macro_input!(item as ItemFn);
+
+    let comment = get_comment(&input.attrs);
+    input.attrs.retain(|attr| !attr.path.is_ident("comment"));
+
+    let mut fn_name = input.sig.ident;
+    if fn_name.to_string().ends_with("_py") {
+        fn_name = format_ident!("{}", &fn_name.to_string().trim_end_matches("_py"));
+    }
+    let inputs = &input.sig.inputs;
+    let output = &input.sig.output;
+    let block = &input.block;
+
+    let expanded = quote! {
+        #[doc = #comment]
         #[cfg(feature = "python")]
-        #[pymodule]
-        fn $module_name(_py: Python, m: &PyModule) -> PyResult<()> {
-            export_cpy!(@add_py_binding m, $($item)*);
+        #[pyo3::prelude::pyfunction]
+        pub fn #fn_name(#inputs) #output #block
+    };
+
+    expanded.into()
+}
+
+fn get_comment(attributes: &[Attribute]) -> String {
+    for attribute in attributes {
+        if let Ok(Meta::NameValue(meta_name_value)) = attribute.parse_meta() {
+            if meta_name_value.path.is_ident("comment") {
+                if let Lit::Str(lit_str) = meta_name_value.lit {
+                    return lit_str.value();
+                }
+            }
+        }
+    }
+    "No documentation".to_string()
+}
+
+struct CpyModuleInput {
+    name: Ident,
+    types: Punctuated<Ident, Token![,]>,
+    functions: Punctuated<Ident, Token![,]>,
+}
+
+impl Parse for CpyModuleInput {
+    fn parse(input: ParseStream) -> Result<Self> {
+        // Name
+        let _: Ident = input.parse()?;
+        input.parse::<Token![=]>()?;
+        let name: Ident = input.parse()?;
+        input.parse::<Token![,]>()?;
+
+        // Types
+        let _: Ident = input.parse()?;
+        input.parse::<Token![=]>()?;
+        let types_content;
+        bracketed!(types_content in input);
+        let types: Punctuated<Ident, Token![,]> = types_content.parse_terminated(Ident::parse)?;
+        input.parse::<Token![,]>()?;
+
+        // Functions
+        let _: Ident = input.parse()?;
+        input.parse::<Token![=]>()?;
+        let functions_content;
+        bracketed!(functions_content in input);
+        let functions: Punctuated<Ident, Token![,]> =
+            functions_content.parse_terminated(Ident::parse)?;
+
+        Ok(CpyModuleInput {
+            name,
+            types,
+            functions,
+        })
+    }
+}
+
+#[proc_macro]
+pub fn cpy_module(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as CpyModuleInput);
+
+    let type_additions: Vec<_> = input
+        .types
+        .iter()
+        .map(|item| {
+            quote! {
+                m.add_class::<#item>()?;
+            }
+        })
+        .collect();
+
+    let function_additions: Vec<_> = input
+        .functions
+        .iter()
+        .map(|item| {
+            quote! {
+                m.add_function(pyo3::wrap_pyfunction!(#item, m)?)?;
+            }
+        })
+        .collect();
+
+    let module_name = &input.name;
+
+    let expanded = quote! {
+        #[cfg(feature = "python")]
+        #[pyo3::pymodule]
+        fn #module_name(py: pyo3::prelude::Python, m: &pyo3::prelude::PyModule) -> pyo3::prelude::PyResult<()> {
+            #(#type_additions)*
+            #(#function_additions)*
             Ok(())
         }
     };
 
-    //(1) - This section defines the processing items patterns
-    (@process_item) => {};
-    (@process_item enum $comment:literal $name:ident { $($variant:ident,)* } $($rest:tt)*) => {
-        export_cpy!(@generate_enum $comment $name { $($variant,)* });
-        export_cpy!(@process_item $($rest)*);
-    };
-    (@process_item enum $name:ident { $($variant:ident,)* } $($rest:tt)*) => {
-        export_cpy!(@generate_enum "No documentation" $name { $($variant,)* });
-        export_cpy!(@process_item $($rest)*);
-    };
-    (@process_item struct $comment:literal $name:ident { $($field:ident : $ftype:ty,)* } $($rest:tt)*) => {
-        export_cpy!(@generate_struct $comment $name { $($field : $ftype,)* });
-        export_cpy!(@process_item $($rest)*);
-    };
-    (@process_item struct $name:ident { $($field:ident : $ftype:ty,)* } $($rest:tt)*) => {
-        export_cpy!(@generate_struct "No documentation" $name { $($field : $ftype,)* });
-        export_cpy!(@process_item $($rest)*);
-    };
-    (@process_item fn $comment:literal $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        export_cpy!(@generate_function $comment $name($($param : $ptype),*) $(-> $ret)? $body);
-        export_cpy!(@process_item $($rest)*);
-    };
-    (@process_item fn $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        export_cpy!(@generate_function "No documentation" $name($($param : $ptype),*) $(-> $ret)? $body);
-        export_cpy!(@process_item $($rest)*);
-    };
-    (@process_item fn_c $comment:literal $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        export_cpy!(@generate_c_function $comment $name($($param : $ptype),*) $(-> $ret)? $body);
-        export_cpy!(@process_item $($rest)*);
-    };
-    (@process_item fn_c $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        export_cpy!(@generate_c_function "No documentation" $name($($param : $ptype),*) $(-> $ret)? $body);
-        export_cpy!(@process_item $($rest)*);
-    };
-    (@process_item fn_py $comment:literal $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        export_cpy!(@generate_py_function $comment $name($($param : $ptype),*) $(-> $ret)? $body);
-        export_cpy!(@process_item $($rest)*);
-    };
-    (@process_item fn_py $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        export_cpy!(@generate_py_function "No documentation" $name($($param : $ptype),*) $(-> $ret)? $body);
-        export_cpy!(@process_item $($rest)*);
-    };
-
-    //(2) - This section defines the structure of the itens
-    (@generate_enum $comment:literal $name:ident { $($variant:ident,)* }) => {
-        #[doc = $comment]
-        #[derive(Clone, Debug)]
-        #[repr(C)]
-        #[cfg_attr(feature = "python", pyo3::prelude::pyclass)]
-        pub enum $name {
-            $(
-                $variant,
-            )*
-        }
-    };
-    (@generate_struct $comment:literal $name:ident { $($field:ident : $ftype:ty,)* }) => {
-        #[doc = $comment]
-        #[derive(Clone, Debug)]
-        #[repr(C)]
-        #[cfg_attr(feature = "python", pyo3::prelude::pyclass(get_all, set_all))]
-        pub struct $name {
-            $(
-                pub $field: $ftype,
-            )*
-        }
-    };
-    (@generate_function $comment:literal $name:ident($($arg:ident: $arg_type:ty),*) $(-> $ret:ty)? $body:block) => {
-        #[doc = $comment]
-        #[no_mangle]
-        #[cfg_attr(feature = "python", pyfunction)]
-        pub extern "C" fn $name($($arg: $arg_type),*) $(-> $ret)?
-            $body
-    };
-    (@generate_c_function $comment:literal $name:ident($($arg:ident: $arg_type:ty),*) $(-> $ret:ty)? $body:block) => {
-        #[doc = $comment]
-        #[no_mangle]
-        #[cfg(not(feature = "python"))]
-        pub extern "C" fn $name($($arg: $arg_type),*) $(-> $ret)?
-            $body
-    };
-    (@generate_py_function $comment:literal $name:ident($($arg:ident: $arg_type:ty),*) $(-> $ret:ty)? $body:block) => {
-        #[doc = $comment]
-        #[cfg(feature = "python")]
-        #[pyfunction]
-        pub fn $name($($arg: $arg_type),*) $(-> $ret)?
-            $body
-    };
-
-    //(3) - This section defines the bindings to be exported to Python module
-    (@add_py_binding $m:ident,) => {};
-    (@add_py_binding $m:ident, enum $name:ident { $($variant:ident,)* } $($rest:tt)*) => {
-        $m.add_class::<$name>()?;
-        export_cpy!(@add_py_binding $m, $($rest)*);
-    };
-    (@add_py_binding $m:ident, enum $comment:literal $name:ident { $($variant:ident,)* } $($rest:tt)*) => {
-        $m.add_class::<$name>()?;
-        export_cpy!(@add_py_binding $m, $($rest)*);
-    };
-    (@add_py_binding $m:ident, struct $name:ident { $($field:ident : $ftype:ty,)* } $($rest:tt)*) => {
-        $m.add_class::<$name>()?;
-        export_cpy!(@add_py_binding $m, $($rest)*);
-    };
-    (@add_py_binding $m:ident, struct $comment:literal $name:ident { $($field:ident : $ftype:ty,)* } $($rest:tt)*) => {
-        $m.add_class::<$name>()?;
-        export_cpy!(@add_py_binding $m, $($rest)*);
-    };
-    (@add_py_binding $m:ident, fn $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        $m.add_wrapped(wrap_pyfunction!($name))?;
-        export_cpy!(@add_py_binding $m, $($rest)*);
-    };
-    (@add_py_binding $m:ident, fn $comment:literal $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        $m.add_wrapped(wrap_pyfunction!($name))?;
-        export_cpy!(@add_py_binding $m, $($rest)*);
-    };
-    (@add_py_binding $m:ident, fn_c $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        export_cpy!(@add_py_binding $m, $($rest)*);
-    };
-    (@add_py_binding $m:ident, fn_c $comment:literal $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        export_cpy!(@add_py_binding $m, $($rest)*);
-    };
-    (@add_py_binding $m:ident, fn_py $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        $m.add_wrapped(wrap_pyfunction!($name))?;
-        export_cpy!(@add_py_binding $m, $($rest)*);
-    };
-    (@add_py_binding $m:ident, fn_py $comment:literal $name:ident($($param:ident : $ptype:ty),*) $(-> $ret:ty)? $body:block $($rest:tt)*) => {
-        $m.add_wrapped(wrap_pyfunction!($name))?;
-        export_cpy!(@add_py_binding $m, $($rest)*);
-    };
+    expanded.into()
 }
