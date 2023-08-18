@@ -7,11 +7,13 @@ repository = "https://github.com/patrickelectric/cpy-rs"
 license = "MIT"
 
 [lib]
-crate-type = ["cdylib", "rlib"]
+proc-macro = true
 
 [dependencies]
 libc = "0.2"
 pyo3 = { version = "0.18", features = ["extension-module"], optional = true }
+syn = { version = "1.0", features = ["full"] }
+quote = "1.0"
 
 [features]
 python = ["pyo3"]
