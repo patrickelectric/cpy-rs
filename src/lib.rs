@@ -7,6 +7,17 @@ use syn::{
     Attribute, Ident, ItemFn, Lit, Meta, Result, Token,
 };
 
+/// Macro used to export enums
+///
+/// Example
+/// ```no_run
+/// #[cpy_enum]
+/// #[comment = "Material types"]
+/// enum Material {
+///     Plastic,
+///     Rubber,
+/// }
+/// ```
 #[proc_macro_attribute]
 pub fn cpy_enum(_attributes: TokenStream, item: TokenStream) -> TokenStream {
     let input = parse_macro_input!(item as syn::ItemEnum);
@@ -28,6 +39,25 @@ pub fn cpy_enum(_attributes: TokenStream, item: TokenStream) -> TokenStream {
     expanded.into()
 }
 
+/// Macro used to export structures
+///
+/// Example
+/// ```no_run
+/// #[cpy_struct]
+/// #[comment = "2D Size"]
+/// struct Size2D {
+///     width: f64,
+///     height: f64,
+/// }
+///
+/// #[cpy_struct]
+/// #[comment = "Tire structure"]
+/// struct Tire {
+///     material: Material,
+///     pressure: f64,
+///     size: Size2D,
+/// }
+/// ```
 #[proc_macro_attribute]
 pub fn cpy_struct(_attributes: TokenStream, item: TokenStream) -> TokenStream {
     let input = parse_macro_input!(item as syn::ItemStruct);
@@ -58,6 +88,25 @@ pub fn cpy_struct(_attributes: TokenStream, item: TokenStream) -> TokenStream {
     expanded.into()
 }
 
+/// Macro used to export functions for both C/C++ and Python
+///
+/// Example
+/// ```no_run
+/// #[cpy_fn] // You can also use `#[comment = "Something"]` to document both languages at once
+/// #[comment_c = "@brief Calculates the aspect ratio of a wheel based on its height and width.\n
+///     @param height Height of the wheel.\n
+///     @param width Width of the wheel.\n
+///     @return float Aspect ratio of the wheel.\n"]
+/// #[comment_py = "Calculates the aspect ratio of a wheel based on its height and width.\n
+///     Args:\n
+///         height (float): Height of the wheel.\n
+///         width (float): Width of the wheel.\n
+///     Returns:\n
+///         float: Aspect ratio of the wheel.\n"]
+/// fn wheel_size_aspect(height: f32, width: f32) -> f32 {
+///     (height / width) * 100.0
+/// }
+/// ```
 #[proc_macro_attribute]
 pub fn cpy_fn(_attributes: TokenStream, item: TokenStream) -> TokenStream {
     let mut input = parse_macro_input!(item as ItemFn);
@@ -85,6 +134,20 @@ pub fn cpy_fn(_attributes: TokenStream, item: TokenStream) -> TokenStream {
     expanded.into()
 }
 
+/// Macro used to export exclusive C++ functions
+///
+/// Example
+/// ```no_run
+/// #[cpy_fn_c]
+/// #[comment = "Format size of wheels for C ABI"]
+/// fn format_size_of_wheels_c(sizes: *const u8, length: usize) {
+///     let values = unsafe {
+///         assert!(!sizes.is_null());
+///         std::slice::from_raw_parts(sizes, length)
+///     };
+///     println!("Wheel sizes: {:?}", values);
+/// }
+/// ```
 #[proc_macro_attribute]
 pub fn cpy_fn_c(_attributes: TokenStream, item: TokenStream) -> TokenStream {
     let mut input = parse_macro_input!(item as ItemFn);
@@ -111,6 +174,16 @@ pub fn cpy_fn_c(_attributes: TokenStream, item: TokenStream) -> TokenStream {
     expanded.into()
 }
 
+/// Macro used to export exclusive python functions
+///
+/// Example
+/// ```no_run
+/// #[cpy_fn_py]
+/// #[comment = "Format size of wheels for Python"]
+/// fn format_size_of_wheels_py(sizes: Vec<u8>) {
+///     println!("Wheel sizes: {:?}", sizes);
+/// }
+/// ```
 #[proc_macro_attribute]
 pub fn cpy_fn_py(_attributes: TokenStream, item: TokenStream) -> TokenStream {
     let mut input = parse_macro_input!(item as ItemFn);
@@ -228,6 +301,22 @@ impl Parse for CpyModuleInput {
     }
 }
 
+/// Macro used to export the python module
+///
+/// Example
+/// ```no_run
+/// cpy_module!(
+///     name = example, // Module name
+///     types = [Material, Size2D, Tire], // Structures and Enums to be exported
+///     functions = [ // Functions to be accessed from python
+///         create_random_tire,
+///         format_wheel_identifier,
+///         format_size_of_wheels,
+///         func_with_no_return,
+///         wheel_size_aspect
+///     ]
+/// );
+/// ```
 #[proc_macro]
 pub fn cpy_module(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as CpyModuleInput);
