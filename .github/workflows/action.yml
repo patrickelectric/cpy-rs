@@ -82,7 +82,7 @@ jobs:
     steps:
       - name: Checkout to repository
         uses: actions/checkout@v2
-      - name: Setup Rust toolchain 
+      - name: Setup Rust toolchain
         uses: actions-rs/toolchain@v1.0.7
         with:
           toolchain: nightly
@@ -92,7 +92,7 @@ jobs:
         run: cargo install cargo-bump --force
       - name: Modify version with tag
         run: cargo bump ${{ github.ref_name }}
-      - name: Automatic commit for crate version upgrade 
+      - name: Automatic commit for crate version upgrade
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           branch: master
