@@ -220,6 +220,52 @@
 <a href="#220" id="220">220</a>
 <a href="#221" id="221">221</a>
 <a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
+<a href="#231" id="231">231</a>
+<a href="#232" id="232">232</a>
+<a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
+<a href="#237" id="237">237</a>
+<a href="#238" id="238">238</a>
+<a href="#239" id="239">239</a>
+<a href="#240" id="240">240</a>
+<a href="#241" id="241">241</a>
+<a href="#242" id="242">242</a>
+<a href="#243" id="243">243</a>
+<a href="#244" id="244">244</a>
+<a href="#245" id="245">245</a>
+<a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
+<a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
+<a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
 </pre></div><pre class="rust"><code><span class="kw">extern crate </span>proc_macro;
 
 <span class="kw">use </span>proc_macro::TokenStream;
@@ -284,8 +330,12 @@
 </span><span class="kw">pub fn </span>cpy_fn(_attributes: TokenStream, item: TokenStream) -&gt; TokenStream {
     <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="macro">parse_macro_input!</span>(item <span class="kw">as </span>ItemFn);
 
-    <span class="kw">let </span>comment = get_comment(<span class="kw-2">&amp;</span>input.attrs);
-    input.attrs.retain(|attr| !attr.path.is_ident(<span class="string">&quot;comment&quot;</span>));
+    <span class="kw">let </span>(comment_c, comment_py) = get_comments(<span class="kw-2">&amp;</span>input.attrs);
+    input.attrs.retain(|attr| {
+        !attr.path.is_ident(<span class="string">&quot;comment&quot;</span>)
+            &amp;&amp; !attr.path.is_ident(<span class="string">&quot;comment_c&quot;</span>)
+            &amp;&amp; !attr.path.is_ident(<span class="string">&quot;comment_py&quot;</span>)
+    });
 
     <span class="kw">let </span>fn_name = <span class="kw-2">&amp;</span>input.sig.ident;
     <span class="kw">let </span>inputs = <span class="kw-2">&amp;</span>input.sig.inputs;
@@ -293,7 +343,8 @@
     <span class="kw">let </span>block = <span class="kw-2">&amp;</span>input.block;
 
     <span class="kw">let </span>expanded = <span class="macro">quote! </span>{
-        <span class="attr">#[doc = #comment]
+        <span class="attr">#[cfg_attr(not(feature = <span class="string">&quot;python&quot;</span>), doc = #comment_c)]
+        #[cfg_attr(feature = <span class="string">&quot;python&quot;</span>, doc = #comment_py)]
         #[no_mangle]
         #[cfg_attr(feature = <span class="string">&quot;python&quot;</span>, pyo3::prelude::pyfunction)]
         </span><span class="kw">pub extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>#fn_name(#inputs) #output #block
@@ -364,6 +415,47 @@
         }
     }
     <span class="string">&quot;No documentation&quot;</span>.to_string()
+}
+
+<span class="kw">fn </span>get_comments(attributes: <span class="kw-2">&amp;</span>[Attribute]) -&gt; (<span class="prelude-ty">Option</span>&lt;String&gt;, <span class="prelude-ty">Option</span>&lt;String&gt;) {
+    <span class="kw">let </span><span class="kw-2">mut </span>comment_c: <span class="prelude-ty">Option</span>&lt;String&gt; = <span class="prelude-val">None</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>comment_py: <span class="prelude-ty">Option</span>&lt;String&gt; = <span class="prelude-val">None</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>comment: <span class="prelude-ty">Option</span>&lt;String&gt; = <span class="prelude-val">None</span>;
+
+    <span class="kw">for </span>attribute <span class="kw">in </span>attributes {
+        <span class="kw">if let </span><span class="prelude-val">Ok</span>(Meta::NameValue(meta_name_value)) = attribute.parse_meta() {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(ident) = meta_name_value.path.get_ident() {
+                <span class="kw">match </span>ident.to_string().as_str() {
+                    <span class="string">&quot;comment_c&quot; </span>=&gt; {
+                        <span class="kw">if let </span>Lit::Str(lit_str) = meta_name_value.lit {
+                            comment_c = <span class="prelude-val">Some</span>(lit_str.value());
+                        }
+                    }
+                    <span class="string">&quot;comment_py&quot; </span>=&gt; {
+                        <span class="kw">if let </span>Lit::Str(lit_str) = meta_name_value.lit {
+                            comment_py = <span class="prelude-val">Some</span>(lit_str.value());
+                        }
+                    }
+                    <span class="string">&quot;comment&quot; </span>=&gt; {
+                        <span class="kw">if let </span>Lit::Str(lit_str) = meta_name_value.lit {
+                            comment = <span class="prelude-val">Some</span>(lit_str.value());
+                        }
+                    }
+                    <span class="kw">_ </span>=&gt; {}
+                }
+            }
+        }
+    }
+
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(documentation) = comment {
+        comment_c = comment_c.or(<span class="prelude-val">Some</span>(documentation.to_string()));
+        comment_py = comment_py.or(<span class="prelude-val">Some</span>(documentation.to_string()));
+    } <span class="kw">else </span>{
+        comment_c = comment_c.or(<span class="prelude-val">Some</span>(<span class="string">&quot;No documentation&quot;</span>.to_string()));
+        comment_py = comment_py.or(<span class="prelude-val">Some</span>(<span class="string">&quot;No documentation&quot;</span>.to_string()));
+    }
+
+    (comment_c, comment_py)
 }
 
 <span class="kw">struct </span>CpyModuleInput {
