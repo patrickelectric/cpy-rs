@@ -23,7 +23,11 @@ struct Tire {
 }
 
 #[cpy_fn]
-#[comment = "Create a random tire"]
+#[comment_c = "@brief Creates and returns a random tire.\n
+    @return Tire A randomly generated tire.\n"]
+#[comment_py = "Creates and returns a random tire.\n
+    Returns:\n
+        Tire: A randomly generated tire.\n"]
 fn create_random_tire() -> Tire {
     use rand::Rng;
     let mut rng = rand::thread_rng();
@@ -79,7 +83,16 @@ fn func_with_no_return() {
 }
 
 #[cpy_fn]
-#[comment = "Calculate wheel size aspect"]
+#[comment_c = "@brief Calculates the aspect ratio of a wheel based on its height and width.\n
+    @param height Height of the wheel.\n
+    @param width Width of the wheel.\n
+    @return float Aspect ratio of the wheel.\n"]
+#[comment_py = "Calculates the aspect ratio of a wheel based on its height and width.\n
+    Args:\n
+        height (float): Height of the wheel.\n
+        width (float): Width of the wheel.\n
+    Returns:\n
+        float: Aspect ratio of the wheel.\n"]
 fn wheel_size_aspect(height: f32, width: f32) -> f32 {
     (height / width) * 100.0
 }
