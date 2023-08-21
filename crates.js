@@ -1,1 +1,1 @@
-window.ALL_CRATES = ["cpy_binder","libc"];
+window.ALL_CRATES = ["cpy_binder","proc_macro2","quote","syn","unicode_ident"];

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"macro":["export_cpy"]};
+window.SIDEBAR_ITEMS = {"attr":["cpy_enum","cpy_fn","cpy_fn_c","cpy_fn_py","cpy_struct"],"macro":["cpy_module"]};

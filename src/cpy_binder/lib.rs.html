@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-cb6f1f67f1bcd037.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cpy_binder" data-themes="" data-resource-suffix="" data-rustdoc-version="1.73.0-nightly (32303b219 2023-07-29)" data-channel="nightly" data-search-js="search-6dfdfced5eff6596.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-6d2c9675f3d09c26.css" data-theme-dark-css="dark-45ceb8f2e522f4d1.css" data-theme-ayu-css="ayu-fd19013d6ce078bf.css" ><script src="../../static.files/storage-db41da1a38ea3cb8.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-6d2c9675f3d09c26.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-45ceb8f2e522f4d1.css"><link rel="stylesheet" href="../../static.files/noscript-cffde32267a19fd6.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../cpy_binder/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-cb6f1f67f1bcd037.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cpy_binder" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0-nightly (5c6a7e71c 2023-08-20)" data-channel="nightly" data-search-js="search-6dfdfced5eff6596.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-1596385f77d47ef2.css" data-theme-dark-css="dark-0a43001d3fc2282c.css" data-theme-ayu-css="ayu-fd19013d6ce078bf.css" ><script src="../../static.files/storage-db41da1a38ea3cb8.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-1596385f77d47ef2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-0a43001d3fc2282c.css"><link rel="stylesheet" href="../../static.files/noscript-cffde32267a19fd6.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../cpy_binder/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -151,157 +151,295 @@
 <a href="#151" id="151">151</a>
 <a href="#152" id="152">152</a>
 <a href="#153" id="153">153</a>
-</pre></div><pre class="rust"><code><span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>export_cpy {
-    <span class="comment">//(0) - Entry point of the macro.
-    //      Matches the module name and block of items.
-    //      It exports Python related modules only if required,
-    //      see the examples.
-    //      Each type have a well defined scope, in sections:
-    //      (1) - Processing
-    //      (2) - Structure
-    //      (3) - Python Module Binding
-    </span>(<span class="kw">mod </span><span class="macro-nonterminal">$module_name</span>:ident { $(<span class="macro-nonterminal">$item</span>:tt)* }) =&gt; {
-        <span class="attr">#[cfg(feature = <span class="string">&quot;python&quot;</span>)]
-        </span><span class="kw">use </span>pyo3::{prelude::<span class="kw-2">*</span>, wrap_pyfunction};
+<a href="#154" id="154">154</a>
+<a href="#155" id="155">155</a>
+<a href="#156" id="156">156</a>
+<a href="#157" id="157">157</a>
+<a href="#158" id="158">158</a>
+<a href="#159" id="159">159</a>
+<a href="#160" id="160">160</a>
+<a href="#161" id="161">161</a>
+<a href="#162" id="162">162</a>
+<a href="#163" id="163">163</a>
+<a href="#164" id="164">164</a>
+<a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
+<a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
+<a href="#174" id="174">174</a>
+<a href="#175" id="175">175</a>
+<a href="#176" id="176">176</a>
+<a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
+<a href="#198" id="198">198</a>
+<a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
+<a href="#208" id="208">208</a>
+<a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+</pre></div><pre class="rust"><code><span class="kw">extern crate </span>proc_macro;
 
-        <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$item</span>)<span class="kw-2">*</span>);
+<span class="kw">use </span>proc_macro::TokenStream;
+<span class="kw">use </span>quote::{format_ident, quote};
+<span class="kw">use </span>syn::{
+    bracketed, parse::Parse, parse::ParseStream, parse_macro_input, punctuated::Punctuated,
+    Attribute, Ident, ItemFn, Lit, Meta, <span class="prelude-ty">Result</span>, Token,
+};
 
+<span class="attr">#[proc_macro_attribute]
+</span><span class="kw">pub fn </span>cpy_enum(_attributes: TokenStream, item: TokenStream) -&gt; TokenStream {
+    <span class="kw">let </span>input = <span class="macro">parse_macro_input!</span>(item <span class="kw">as </span>syn::ItemEnum);
+    <span class="kw">let </span>name = <span class="kw-2">&amp;</span>input.ident;
+
+    <span class="kw">let </span>comment = get_comment(<span class="kw-2">&amp;</span>input.attrs);
+
+    <span class="kw">let </span>variants: Vec&lt;<span class="kw">_</span>&gt; = input.variants.iter().map(|v| <span class="kw-2">&amp;</span>v.ident).collect();
+    <span class="kw">let </span>expanded = <span class="macro">quote! </span>{
+        <span class="attr">#[doc = #comment]
+        #[derive(Clone, Debug)]
+        #[repr(C)]
+        #[cfg_attr(feature = <span class="string">&quot;python&quot;</span>, pyo3::prelude::pyclass)]
+        </span><span class="kw">pub enum </span>#name {
+            #(#variants),*
+        }
+    };
+
+    expanded.into()
+}
+
+<span class="attr">#[proc_macro_attribute]
+</span><span class="kw">pub fn </span>cpy_struct(_attributes: TokenStream, item: TokenStream) -&gt; TokenStream {
+    <span class="kw">let </span>input = <span class="macro">parse_macro_input!</span>(item <span class="kw">as </span>syn::ItemStruct);
+    <span class="kw">let </span>name = <span class="kw-2">&amp;</span>input.ident;
+
+    <span class="kw">let </span>comment = get_comment(<span class="kw-2">&amp;</span>input.attrs);
+
+    <span class="kw">let </span>fields: Vec&lt;<span class="kw">_</span>&gt; = input
+        .fields
+        .iter()
+        .map(|f| {
+            <span class="kw">let </span>fname = <span class="kw-2">&amp;</span>f.ident;
+            <span class="kw">let </span>ftype = <span class="kw-2">&amp;</span>f.ty;
+            <span class="macro">quote! </span>{ #fname: #ftype }
+        })
+        .collect();
+
+    <span class="kw">let </span>expanded = <span class="macro">quote! </span>{
+        <span class="attr">#[doc = #comment]
+        #[derive(Clone, Debug)]
+        #[repr(C)]
+        #[cfg_attr(feature = <span class="string">&quot;python&quot;</span>, pyo3::prelude::pyclass(get_all, set_all))]
+        </span><span class="kw">pub struct </span>#name {
+            #(#fields),*
+        }
+    };
+
+    expanded.into()
+}
+
+<span class="attr">#[proc_macro_attribute]
+</span><span class="kw">pub fn </span>cpy_fn(_attributes: TokenStream, item: TokenStream) -&gt; TokenStream {
+    <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="macro">parse_macro_input!</span>(item <span class="kw">as </span>ItemFn);
+
+    <span class="kw">let </span>comment = get_comment(<span class="kw-2">&amp;</span>input.attrs);
+    input.attrs.retain(|attr| !attr.path.is_ident(<span class="string">&quot;comment&quot;</span>));
+
+    <span class="kw">let </span>fn_name = <span class="kw-2">&amp;</span>input.sig.ident;
+    <span class="kw">let </span>inputs = <span class="kw-2">&amp;</span>input.sig.inputs;
+    <span class="kw">let </span>output = <span class="kw-2">&amp;</span>input.sig.output;
+    <span class="kw">let </span>block = <span class="kw-2">&amp;</span>input.block;
+
+    <span class="kw">let </span>expanded = <span class="macro">quote! </span>{
+        <span class="attr">#[doc = #comment]
+        #[no_mangle]
+        #[cfg_attr(feature = <span class="string">&quot;python&quot;</span>, pyo3::prelude::pyfunction)]
+        </span><span class="kw">pub extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>#fn_name(#inputs) #output #block
+    };
+
+    expanded.into()
+}
+
+<span class="attr">#[proc_macro_attribute]
+</span><span class="kw">pub fn </span>cpy_fn_c(_attributes: TokenStream, item: TokenStream) -&gt; TokenStream {
+    <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="macro">parse_macro_input!</span>(item <span class="kw">as </span>ItemFn);
+
+    <span class="kw">let </span>comment = get_comment(<span class="kw-2">&amp;</span>input.attrs);
+    input.attrs.retain(|attr| !attr.path.is_ident(<span class="string">&quot;comment&quot;</span>));
+
+    <span class="kw">let </span><span class="kw-2">mut </span>fn_name = input.sig.ident;
+    <span class="kw">if </span>fn_name.to_string().ends_with(<span class="string">&quot;_c&quot;</span>) {
+        fn_name = <span class="macro">format_ident!</span>(<span class="string">&quot;{}&quot;</span>, <span class="kw-2">&amp;</span>fn_name.to_string().trim_end_matches(<span class="string">&quot;_c&quot;</span>));
+    }
+
+    <span class="kw">let </span>inputs = <span class="kw-2">&amp;</span>input.sig.inputs;
+    <span class="kw">let </span>output = <span class="kw-2">&amp;</span>input.sig.output;
+    <span class="kw">let </span>block = <span class="kw-2">&amp;</span>input.block;
+
+    <span class="kw">let </span>expanded = <span class="macro">quote! </span>{
+        <span class="attr">#[doc = #comment]
+        #[no_mangle]
+        #[cfg(not(feature = <span class="string">&quot;python&quot;</span>))]
+        </span><span class="kw">pub extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>#fn_name(#inputs) #output #block
+    };
+
+    expanded.into()
+}
+
+<span class="attr">#[proc_macro_attribute]
+</span><span class="kw">pub fn </span>cpy_fn_py(_attributes: TokenStream, item: TokenStream) -&gt; TokenStream {
+    <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="macro">parse_macro_input!</span>(item <span class="kw">as </span>ItemFn);
+
+    <span class="kw">let </span>comment = get_comment(<span class="kw-2">&amp;</span>input.attrs);
+    input.attrs.retain(|attr| !attr.path.is_ident(<span class="string">&quot;comment&quot;</span>));
+
+    <span class="kw">let </span><span class="kw-2">mut </span>fn_name = input.sig.ident;
+    <span class="kw">if </span>fn_name.to_string().ends_with(<span class="string">&quot;_py&quot;</span>) {
+        fn_name = <span class="macro">format_ident!</span>(<span class="string">&quot;{}&quot;</span>, <span class="kw-2">&amp;</span>fn_name.to_string().trim_end_matches(<span class="string">&quot;_py&quot;</span>));
+    }
+    <span class="kw">let </span>inputs = <span class="kw-2">&amp;</span>input.sig.inputs;
+    <span class="kw">let </span>output = <span class="kw-2">&amp;</span>input.sig.output;
+    <span class="kw">let </span>block = <span class="kw-2">&amp;</span>input.block;
+
+    <span class="kw">let </span>expanded = <span class="macro">quote! </span>{
+        <span class="attr">#[doc = #comment]
+        #[cfg(feature = <span class="string">&quot;python&quot;</span>)]
+        #[pyo3::prelude::pyfunction]
+        </span><span class="kw">pub fn </span>#fn_name(#inputs) #output #block
+    };
+
+    expanded.into()
+}
+
+<span class="kw">fn </span>get_comment(attributes: <span class="kw-2">&amp;</span>[Attribute]) -&gt; String {
+    <span class="kw">for </span>attribute <span class="kw">in </span>attributes {
+        <span class="kw">if let </span><span class="prelude-val">Ok</span>(Meta::NameValue(meta_name_value)) = attribute.parse_meta() {
+            <span class="kw">if </span>meta_name_value.path.is_ident(<span class="string">&quot;comment&quot;</span>) {
+                <span class="kw">if let </span>Lit::Str(lit_str) = meta_name_value.lit {
+                    <span class="kw">return </span>lit_str.value();
+                }
+            }
+        }
+    }
+    <span class="string">&quot;No documentation&quot;</span>.to_string()
+}
+
+<span class="kw">struct </span>CpyModuleInput {
+    name: Ident,
+    types: Punctuated&lt;Ident, <span class="macro">Token!</span>[,]&gt;,
+    functions: Punctuated&lt;Ident, <span class="macro">Token!</span>[,]&gt;,
+}
+
+<span class="kw">impl </span>Parse <span class="kw">for </span>CpyModuleInput {
+    <span class="kw">fn </span>parse(input: ParseStream) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="comment">// Name
+        </span><span class="kw">let _</span>: Ident = input.parse()<span class="question-mark">?</span>;
+        input.parse::&lt;<span class="macro">Token!</span>[=]&gt;()<span class="question-mark">?</span>;
+        <span class="kw">let </span>name: Ident = input.parse()<span class="question-mark">?</span>;
+        input.parse::&lt;<span class="macro">Token!</span>[,]&gt;()<span class="question-mark">?</span>;
+
+        <span class="comment">// Types
+        </span><span class="kw">let _</span>: Ident = input.parse()<span class="question-mark">?</span>;
+        input.parse::&lt;<span class="macro">Token!</span>[=]&gt;()<span class="question-mark">?</span>;
+        <span class="kw">let </span>types_content;
+        <span class="macro">bracketed!</span>(types_content <span class="kw">in </span>input);
+        <span class="kw">let </span>types: Punctuated&lt;Ident, <span class="macro">Token!</span>[,]&gt; = types_content.parse_terminated(Ident::parse)<span class="question-mark">?</span>;
+        input.parse::&lt;<span class="macro">Token!</span>[,]&gt;()<span class="question-mark">?</span>;
+
+        <span class="comment">// Functions
+        </span><span class="kw">let _</span>: Ident = input.parse()<span class="question-mark">?</span>;
+        input.parse::&lt;<span class="macro">Token!</span>[=]&gt;()<span class="question-mark">?</span>;
+        <span class="kw">let </span>functions_content;
+        <span class="macro">bracketed!</span>(functions_content <span class="kw">in </span>input);
+        <span class="kw">let </span>functions: Punctuated&lt;Ident, <span class="macro">Token!</span>[,]&gt; =
+            functions_content.parse_terminated(Ident::parse)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(CpyModuleInput {
+            name,
+            types,
+            functions,
+        })
+    }
+}
+
+<span class="attr">#[proc_macro]
+</span><span class="kw">pub fn </span>cpy_module(input: TokenStream) -&gt; TokenStream {
+    <span class="kw">let </span>input = <span class="macro">parse_macro_input!</span>(input <span class="kw">as </span>CpyModuleInput);
+
+    <span class="kw">let </span>type_additions: Vec&lt;<span class="kw">_</span>&gt; = input
+        .types
+        .iter()
+        .map(|item| {
+            <span class="macro">quote! </span>{
+                m.add_class::&lt;#item&gt;()<span class="question-mark">?</span>;
+            }
+        })
+        .collect();
+
+    <span class="kw">let </span>function_additions: Vec&lt;<span class="kw">_</span>&gt; = input
+        .functions
+        .iter()
+        .map(|item| {
+            <span class="macro">quote! </span>{
+                m.add_function(<span class="macro">pyo3::wrap_pyfunction!</span>(#item, m)<span class="question-mark">?</span>)<span class="question-mark">?</span>;
+            }
+        })
+        .collect();
+
+    <span class="kw">let </span>module_name = <span class="kw-2">&amp;</span>input.name;
+
+    <span class="kw">let </span>expanded = <span class="macro">quote! </span>{
         <span class="attr">#[cfg(feature = <span class="string">&quot;python&quot;</span>)]
-        #[pymodule]
-        </span><span class="kw">fn </span><span class="macro-nonterminal">$module_name</span>(_py: Python, m: <span class="kw-2">&amp;</span>PyModule) -&gt; PyResult&lt;()&gt; {
-            <span class="macro">export_cpy!</span>(@add_py_binding m, $(<span class="macro-nonterminal">$item</span>)<span class="kw-2">*</span>);
+        #[pyo3::pymodule]
+        </span><span class="kw">fn </span>#module_name(py: pyo3::prelude::Python, m: <span class="kw-2">&amp;</span>pyo3::prelude::PyModule) -&gt; pyo3::prelude::PyResult&lt;()&gt; {
+            #(#type_additions)*
+            #(#function_additions)*
             <span class="prelude-val">Ok</span>(())
         }
     };
 
-    <span class="comment">//(1) - This section defines the processing items patterns
-    </span>(@process_item) =&gt; {};
-    (@process_item <span class="kw">enum </span><span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$variant</span>:ident,)* } $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@generate_enum <span class="macro-nonterminal">$comment $name </span>{ $(<span class="macro-nonterminal">$variant</span>,)* });
-        <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@process_item <span class="kw">enum </span><span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$variant</span>:ident,)* } $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@generate_enum <span class="string">&quot;No documentation&quot; </span><span class="macro-nonterminal">$name </span>{ $(<span class="macro-nonterminal">$variant</span>,)* });
-        <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@process_item <span class="kw">struct </span><span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$field</span>:ident : <span class="macro-nonterminal">$ftype</span>:ty,)* } $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@generate_struct <span class="macro-nonterminal">$comment $name </span>{ $(<span class="macro-nonterminal">$field </span>: <span class="macro-nonterminal">$ftype</span>,)* });
-        <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@process_item <span class="kw">struct </span><span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$field</span>:ident : <span class="macro-nonterminal">$ftype</span>:ty,)* } $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@generate_struct <span class="string">&quot;No documentation&quot; </span><span class="macro-nonterminal">$name </span>{ $(<span class="macro-nonterminal">$field </span>: <span class="macro-nonterminal">$ftype</span>,)* });
-        <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@process_item <span class="kw">fn </span><span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@generate_function <span class="macro-nonterminal">$comment $name</span>($(<span class="macro-nonterminal">$param </span>: <span class="macro-nonterminal">$ptype</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>);
-        <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@process_item <span class="kw">fn </span><span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@generate_function <span class="string">&quot;No documentation&quot; </span><span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$param </span>: <span class="macro-nonterminal">$ptype</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>);
-        <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@process_item fn_c <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@generate_c_function <span class="macro-nonterminal">$comment $name</span>($(<span class="macro-nonterminal">$param </span>: <span class="macro-nonterminal">$ptype</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>);
-        <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@process_item fn_c <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@generate_c_function <span class="string">&quot;No documentation&quot; </span><span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$param </span>: <span class="macro-nonterminal">$ptype</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>);
-        <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@process_item fn_py <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@generate_py_function <span class="macro-nonterminal">$comment $name</span>($(<span class="macro-nonterminal">$param </span>: <span class="macro-nonterminal">$ptype</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>);
-        <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@process_item fn_py <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@generate_py_function <span class="string">&quot;No documentation&quot; </span><span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$param </span>: <span class="macro-nonterminal">$ptype</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>);
-        <span class="macro">export_cpy!</span>(@process_item $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-
-    <span class="comment">//(2) - This section defines the structure of the itens
-    </span>(@generate_enum <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$variant</span>:ident,)* }) =&gt; {
-        <span class="attr">#[doc = <span class="macro-nonterminal">$comment</span>]
-        #[derive(Clone, Debug)]
-        #[repr(C)]
-        #[cfg_attr(feature = <span class="string">&quot;python&quot;</span>, pyo3::prelude::pyclass)]
-        </span><span class="kw">pub enum </span><span class="macro-nonterminal">$name </span>{
-            $(
-                <span class="macro-nonterminal">$variant</span>,
-            )*
-        }
-    };
-    (@generate_struct <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$field</span>:ident : <span class="macro-nonterminal">$ftype</span>:ty,)* }) =&gt; {
-        <span class="attr">#[doc = <span class="macro-nonterminal">$comment</span>]
-        #[derive(Clone, Debug)]
-        #[repr(C)]
-        #[cfg_attr(feature = <span class="string">&quot;python&quot;</span>, pyo3::prelude::pyclass(get_all, set_all))]
-        </span><span class="kw">pub struct </span><span class="macro-nonterminal">$name </span>{
-            $(
-                <span class="kw">pub </span><span class="macro-nonterminal">$field</span>: <span class="macro-nonterminal">$ftype</span>,
-            )*
-        }
-    };
-    (@generate_function <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$arg</span>:ident: <span class="macro-nonterminal">$arg_type</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block) =&gt; {
-        <span class="attr">#[doc = <span class="macro-nonterminal">$comment</span>]
-        #[no_mangle]
-        #[cfg_attr(feature = <span class="string">&quot;python&quot;</span>, pyfunction)]
-        </span><span class="kw">pub extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span><span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$arg</span>: <span class="macro-nonterminal">$arg_type</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">?
-            </span><span class="macro-nonterminal">$body
-    </span>};
-    (@generate_c_function <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$arg</span>:ident: <span class="macro-nonterminal">$arg_type</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block) =&gt; {
-        <span class="attr">#[doc = <span class="macro-nonterminal">$comment</span>]
-        #[no_mangle]
-        #[cfg(not(feature = <span class="string">&quot;python&quot;</span>))]
-        </span><span class="kw">pub extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span><span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$arg</span>: <span class="macro-nonterminal">$arg_type</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">?
-            </span><span class="macro-nonterminal">$body
-    </span>};
-    (@generate_py_function <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$arg</span>:ident: <span class="macro-nonterminal">$arg_type</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block) =&gt; {
-        <span class="attr">#[doc = <span class="macro-nonterminal">$comment</span>]
-        #[cfg(feature = <span class="string">&quot;python&quot;</span>)]
-        #[pyfunction]
-        </span><span class="kw">pub fn </span><span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$arg</span>: <span class="macro-nonterminal">$arg_type</span>),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>)<span class="question-mark">?
-            </span><span class="macro-nonterminal">$body
-    </span>};
-
-    <span class="comment">//(3) - This section defines the bindings to be exported to Python module
-    </span>(@add_py_binding <span class="macro-nonterminal">$m</span>:ident,) =&gt; {};
-    (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, <span class="kw">enum </span><span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$variant</span>:ident,)* } $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro-nonterminal">$m</span>.add_class::&lt;<span class="macro-nonterminal">$name</span>&gt;()<span class="question-mark">?</span>;
-        <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, <span class="kw">enum </span><span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$variant</span>:ident,)* } $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro-nonterminal">$m</span>.add_class::&lt;<span class="macro-nonterminal">$name</span>&gt;()<span class="question-mark">?</span>;
-        <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, <span class="kw">struct </span><span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$field</span>:ident : <span class="macro-nonterminal">$ftype</span>:ty,)* } $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro-nonterminal">$m</span>.add_class::&lt;<span class="macro-nonterminal">$name</span>&gt;()<span class="question-mark">?</span>;
-        <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, <span class="kw">struct </span><span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident { $(<span class="macro-nonterminal">$field</span>:ident : <span class="macro-nonterminal">$ftype</span>:ty,)* } $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro-nonterminal">$m</span>.add_class::&lt;<span class="macro-nonterminal">$name</span>&gt;()<span class="question-mark">?</span>;
-        <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, <span class="kw">fn </span><span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro-nonterminal">$m</span>.add_wrapped(<span class="macro">wrap_pyfunction!</span>(<span class="macro-nonterminal">$name</span>))<span class="question-mark">?</span>;
-        <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, <span class="kw">fn </span><span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro-nonterminal">$m</span>.add_wrapped(<span class="macro">wrap_pyfunction!</span>(<span class="macro-nonterminal">$name</span>))<span class="question-mark">?</span>;
-        <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, fn_c <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, fn_c <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, fn_py <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro-nonterminal">$m</span>.add_wrapped(<span class="macro">wrap_pyfunction!</span>(<span class="macro-nonterminal">$name</span>))<span class="question-mark">?</span>;
-        <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
-    (@add_py_binding <span class="macro-nonterminal">$m</span>:ident, fn_py <span class="macro-nonterminal">$comment</span>:literal <span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$param</span>:ident : <span class="macro-nonterminal">$ptype</span>:ty),<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret</span>:ty)<span class="question-mark">? </span><span class="macro-nonterminal">$body</span>:block $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro-nonterminal">$m</span>.add_wrapped(<span class="macro">wrap_pyfunction!</span>(<span class="macro-nonterminal">$name</span>))<span class="question-mark">?</span>;
-        <span class="macro">export_cpy!</span>(@add_py_binding <span class="macro-nonterminal">$m</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
-    };
+    expanded.into()
 }
 </code></pre></div></section></main></body></html>
