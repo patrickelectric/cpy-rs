@@ -16,4 +16,4 @@ rand = "0.8"
 python = ["cpy-binder/python", "pyo3"]
 
 [build-dependencies]
-cbindgen = "0.21"
+cbindgen = "0.24"
