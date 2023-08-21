@@ -1,6 +1,6 @@
 [package]
 name = "cpy-binder"
-version = "0.3.0"
+version = "1.0.0"
 edition = "2021"
 description = "Helps when creating binds from Rust to C++ and Python"
 repository = "https://github.com/patrickelectric/cpy-rs"
