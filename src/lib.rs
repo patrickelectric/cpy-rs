@@ -62,8 +62,12 @@ pub fn cpy_struct(_attributes: TokenStream, item: TokenStream) -> TokenStream {
 pub fn cpy_fn(_attributes: TokenStream, item: TokenStream) -> TokenStream {
     let mut input = parse_macro_input!(item as ItemFn);
 
-    let comment = get_comment(&input.attrs);
-    input.attrs.retain(|attr| !attr.path.is_ident("comment"));
+    let (comment_c, comment_py) = get_comments(&input.attrs);
+    input.attrs.retain(|attr| {
+        !attr.path.is_ident("comment")
+            && !attr.path.is_ident("comment_c")
+            && !attr.path.is_ident("comment_py")
+    });
 
     let fn_name = &input.sig.ident;
     let inputs = &input.sig.inputs;
@@ -71,7 +75,8 @@ pub fn cpy_fn(_attributes: TokenStream, item: TokenStream) -> TokenStream {
     let block = &input.block;
 
     let expanded = quote! {
-        #[doc = #comment]
+        #[cfg_attr(not(feature = "python"), doc = #comment_c)]
+        #[cfg_attr(feature = "python", doc = #comment_py)]
         #[no_mangle]
         #[cfg_attr(feature = "python", pyo3::prelude::pyfunction)]
         pub extern "C" fn #fn_name(#inputs) #output #block
@@ -142,6 +147,47 @@ fn get_comment(attributes: &[Attribute]) -> String {
         }
     }
     "No documentation".to_string()
+}
+
+fn get_comments(attributes: &[Attribute]) -> (Option<String>, Option<String>) {
+    let mut comment_c: Option<String> = None;
+    let mut comment_py: Option<String> = None;
+    let mut comment: Option<String> = None;
+
+    for attribute in attributes {
+        if let Ok(Meta::NameValue(meta_name_value)) = attribute.parse_meta() {
+            if let Some(ident) = meta_name_value.path.get_ident() {
+                match ident.to_string().as_str() {
+                    "comment_c" => {
+                        if let Lit::Str(lit_str) = meta_name_value.lit {
+                            comment_c = Some(lit_str.value());
+                        }
+                    }
+                    "comment_py" => {
+                        if let Lit::Str(lit_str) = meta_name_value.lit {
+                            comment_py = Some(lit_str.value());
+                        }
+                    }
+                    "comment" => {
+                        if let Lit::Str(lit_str) = meta_name_value.lit {
+                            comment = Some(lit_str.value());
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+    }
+
+    if let Some(documentation) = comment {
+        comment_c = comment_c.or(Some(documentation.to_string()));
+        comment_py = comment_py.or(Some(documentation.to_string()));
+    } else {
+        comment_c = comment_c.or(Some("No documentation".to_string()));
+        comment_py = comment_py.or(Some("No documentation".to_string()));
+    }
+
+    (comment_c, comment_py)
 }
 
 struct CpyModuleInput {
