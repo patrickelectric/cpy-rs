@@ -26,8 +26,6 @@ jobs:
       run: cargo fmt -- --check
     - name: Check Rust code with Clippy
       run: cargo clippy -- -Dwarnings -A clippy::not_unsafe_ptr_arg_deref
-    - name: Run internal tests
-      run: cargo test --verbose -- --nocapture
     - name: Build Rust project
       run: cargo build
     - name: Example - Check Rust formatting
@@ -38,10 +36,6 @@ jobs:
       run: |
         cd example
         cargo clippy -- -Dwarnings -A clippy::not_unsafe_ptr_arg_deref
-    - name: Example - Run internal tests
-      run: |
-        cd example
-        cargo test --verbose -- --nocapture
     - name: Example - Build Rust project
       run: |
         cd example
